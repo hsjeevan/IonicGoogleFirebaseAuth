@@ -12,10 +12,31 @@ import { AppRoutingModule } from './app-routing.module';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+
+const config = {
+  apiKey: "AIzaSyASx68ehkL0xTNhrryUW3_11bf7n0jTn-0",
+  authDomain: "testapp-bb252.firebaseapp.com",
+  databaseURL: "https://testapp-bb252.firebaseio.com",
+  projectId: "testapp-bb252",
+  storageBucket: "",
+  messagingSenderId: "701949861765"
+};
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
+    AngularFireModule,
+    AngularFireAuthModule,
+    AngularFireModule.initializeApp(config),
+    AngularFirestoreModule,
+    AngularFireAuthModule,
+    AngularFireStorageModule,
+  ],
   providers: [
     StatusBar,
     SplashScreen,

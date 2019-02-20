@@ -4,6 +4,11 @@ import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { LoadingController, AlertController, Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+import * as firebase from 'firebase/app';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { Observable } from 'rxjs';
+
+
 
 @Component({
   selector: 'app-login',
@@ -13,6 +18,7 @@ import { environment } from '../../environments/environment';
 export class LoginPage {
 
   constructor(
+    private afAuth: AngularFireAuth,
     private googlePlus: GooglePlus,
     private nativeStorage: NativeStorage,
     public loadingController: LoadingController,
@@ -37,6 +43,9 @@ export class LoginPage {
           name: user.displayName,
           email: user.email,
           picture: user.imageUrl
+        })
+        .then(async()=>{
+          return await this.afAuth.auth.signInWithCredential(firebase.auth.GoogleAuthProvider.credential(user.idToken))
         })
         .then(() => {
            this.router.navigate(["/user"]);
