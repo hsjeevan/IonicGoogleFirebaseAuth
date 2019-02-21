@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { LoadingController } from '@ionic/angular';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-user',
@@ -18,7 +19,9 @@ export class UserPage implements OnInit {
     private googlePlus: GooglePlus,
     private nativeStorage: NativeStorage,
     public loadingController: LoadingController,
-    private router: Router
+    private router: Router,
+    private afAuth: AngularFireAuth,
+
   ) { }
 
   async ngOnInit() {
@@ -42,6 +45,7 @@ export class UserPage implements OnInit {
   }
 
   doGoogleLogout(){
+    this.afAuth.auth.signOut();
     this.googlePlus.logout()
     .then(res => {
       //user logged out so we will remove him from the NativeStorage
