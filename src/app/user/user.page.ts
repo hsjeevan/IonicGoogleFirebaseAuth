@@ -4,6 +4,7 @@ import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { LoadingController } from '@ionic/angular';
 import { AngularFireAuth } from '@angular/fire/auth';
+// import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-user',
@@ -21,6 +22,7 @@ export class UserPage implements OnInit {
     public loadingController: LoadingController,
     private router: Router,
     private afAuth: AngularFireAuth,
+    // private afs: AngularFirestore,
 
   ) { }
 

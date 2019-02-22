@@ -6,7 +6,10 @@ import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import * as firebase from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+
 
 
 
@@ -17,6 +20,8 @@ import { Observable } from 'rxjs';
 })
 export class LoginPage {
 
+  user$: Observable<any>;
+
   constructor(
     private afAuth: AngularFireAuth,
     private googlePlus: GooglePlus,
@@ -24,8 +29,20 @@ export class LoginPage {
     public loadingController: LoadingController,
     private router: Router,
     private platform: Platform,
-    public alertController: AlertController
-  ) { }
+    public alertController: AlertController,
+    private afs: AngularFirestore
+
+  ) {
+    this.user$ = this.afAuth.authState.pipe(
+      switchMap(user => {
+        if (user) {
+          return this.afs.doc<firebase.User>(`users/${user.uid}`).valueChanges();
+        } else {
+          return of(null);
+        }
+      })
+    );
+  }
 
   async doGoogleLogin(){
     const loading = await this.loadingController.create({
@@ -40,12 +57,15 @@ export class LoginPage {
       .then(user => {
         //save user data on the native storage
         this.nativeStorage.setItem('google_user', {
+          uid: user.idToken,
           name: user.displayName,
           email: user.email,
           picture: user.imageUrl
         })
         .then(async()=>{
-          return await this.afAuth.auth.signInWithCredential(firebase.auth.GoogleAuthProvider.credential(user.idToken))
+          const uid = await this.afAuth.auth.signInWithCredential(firebase.auth.GoogleAuthProvider.credential(user.idToken))
+          this.updateUserData(uid);
+          return uid;
         })
         .then(() => {
            this.router.navigate(["/user"]);
@@ -75,5 +95,20 @@ export class LoginPage {
   async presentLoading(loading) {
     return await loading.present();
   }
+  private updateUserData(user) {
+    // Sets user data to firestore on login
+    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+    // const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`).collection('parent').doc(`${user.displayName}`);
 
+    const data = { 
+      
+      uid: user.uid, 
+      email: user.email, 
+      displayName: user.displayName, 
+      photoURL: user.photoURL
+    } 
+
+    return userRef.set(data, { merge: true })
+
+  }
 }

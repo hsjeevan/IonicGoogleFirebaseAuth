@@ -14,8 +14,8 @@ import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFireStorageModule } from '@angular/fire/storage';
-import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireStorageModule} from '@angular/fire/storage';
+import { AngularFireAuthModule} from '@angular/fire/auth';
 
 const config = {
   apiKey: "AIzaSyASx68ehkL0xTNhrryUW3_11bf7n0jTn-0",
@@ -30,8 +30,6 @@ const config = {
   declarations: [AppComponent],
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
-    AngularFireModule,
-    AngularFireAuthModule,
     AngularFireModule.initializeApp(config),
     AngularFirestoreModule,
     AngularFireAuthModule,
